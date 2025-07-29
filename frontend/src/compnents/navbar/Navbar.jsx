@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import Loader from "react-js-loader";
+import { useNavigate, Link } from 'react-router-dom'; // Import Link for navigation
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const user = localStorage.getItem('tokenUser');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
     if (token) {
       setIsLoggedIn(true);
     }
@@ -38,18 +35,16 @@ const Navbar = () => {
       console.error('Error logging out:', err);
     }
   };
+
   const handleDelete = () => {
-    // Show delete modal
     setShowDeleteModal(true);
   };
 
   const confirmDelete = async () => {
     try {
-      // Call the backend route to delete the user
       await fetch(`http://localhost:4000/delete-user/${user}`, {
         method: 'DELETE',
       });
-      // Perform logout after deletion
       localStorage.removeItem('token');
       localStorage.removeItem('tokenUser');
       setIsLoggedIn(false);
@@ -60,20 +55,27 @@ const Navbar = () => {
   };
 
   const closeModal = () => {
-    // Close the delete modal
     setShowDeleteModal(false);
   };
 
+  // Use React Router's Link for internal navigation
+  const NavLink = ({ to, children }) => (
+    <Link to={to} className="text-sm font-semibold leading-6 text-gray-900">{children}</Link>
+  );
+
+  const MobileNavLink = ({ to, children }) => (
+    <Link to={to} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">{children}</Link>
+  );
+
   return (
-    
     <div className="bg-white w-full z-50 shadow-lg">
       <header className="absolute inset-x-0 top-0 z-50">
         <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
           <div className="flex lg:flex-1">
-            <a href="/" className="-m-1.5 p-1.5">
+            <Link to="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <img className="h-8 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQZrRgwuKA5JrFS4glBVgzvmPDhhPjWrObr-D01xeKZQ&s" alt="Your Company" />
-            </a>
+            </Link>
           </div>
           <div className="flex lg:hidden">
             <button
@@ -88,11 +90,11 @@ const Navbar = () => {
             </button>
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
-            <a href={`/${user}/mood`} className="text-sm font-semibold leading-6 text-gray-900">Mood Tracker</a>
-            <a href={`/${user}/therapist`} className="text-sm font-semibold leading-6 text-gray-900">AI Therapist</a>
-            <a href={`/${user}/quiz`} className="text-sm font-semibold leading-6 text-gray-900">Quiz</a>
-            <a href={`/${user}/anonymoussharing`} className="text-sm font-semibold leading-6 text-gray-900">Anonymous Sharing</a>
-            <a href="/aboutus" className="text-sm font-semibold leading-6 text-gray-900">About Us</a>
+            <NavLink to={`/${user}/mood`}>Mood Tracker</NavLink>
+            <NavLink to={`/${user}/therapist`}>AI Therapist</NavLink>
+            <NavLink to={`/${user}/quiz`}>Quiz</NavLink>
+            <NavLink to={`/${user}/anonymoussharing`}>Anonymous Sharing</NavLink>
+            <NavLink to="/aboutus">About Us</NavLink>
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             {isLoggedIn ? (
@@ -113,16 +115,17 @@ const Navbar = () => {
                 </div>
                 {dropdownOpen && (
                   <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1">
-                    <a href={`/${user}/profile`} className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-0">Your Profile</a>
-                    <a onClick={(e) => handleLogout(e)} href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2">Sign out</a>
-                    <a onClick={handleDelete} href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2">Delete Profile</a>
+                    <Link to={`/${user}/profile`} className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-0">Your Profile</Link>
+                    {/* FIXED: Replaced <a> with <button> for actions */}
+                    <button onClick={handleLogout} className="w-full text-left block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2">Sign out</button>
+                    <button onClick={handleDelete} className="w-full text-left block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-3">Delete Profile</button>
                   </div>
                 )}
               </div>
             ) : (
-              <a href="/login" className="text-sm font-semibold leading-6 text-gray-900">
+              <Link to="/login" className="text-sm font-semibold leading-6 text-gray-900">
                 Login <span aria-hidden="true">→</span>
-              </a>
+              </Link>
             )}
           </div>
         </nav>
@@ -131,10 +134,11 @@ const Navbar = () => {
             <div className="fixed inset-0 z-50"></div>
             <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
               <div className="flex items-center justify-between">
-                <a href="#" className="-m-1.5 p-1.5">
+                {/* FIXED: Changed href="#" to href="/" */}
+                <Link to="/" className="-m-1.5 p-1.5">
                   <span className="sr-only">Your Company</span>
                   <img className="h-8 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQZrRgwuKA5JrFS4glBVgzvmPDhhPjWrObr-D01xeKZQ&s" alt="Your Company" />
-                </a>
+                </Link>
                 <button
                   type="button"
                   className="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -149,40 +153,23 @@ const Navbar = () => {
               <div className="mt-6 flow-root">
                 <div className="-my-6 divide-y divide-gray-500/10">
                   <div className="space-y-2 py-6">
-
-                    <a href={`/${user}/mood`} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Mood Tracker</a>
-                    <a href={`/${user}/therapist`} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">AI Therapist</a>
-                    <a href={`/${user}/quiz`} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Quiz</a>
-                    <a href={`/${user}/anonymoussharing`} className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Anonymous Sharing</a>
-                    <a href="/aboutus" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">About Us</a>
+                    <MobileNavLink to={`/${user}/mood`}>Mood Tracker</MobileNavLink>
+                    <MobileNavLink to={`/${user}/therapist`}>AI Therapist</MobileNavLink>
+                    <MobileNavLink to={`/${user}/quiz`}>Quiz</MobileNavLink>
+                    <MobileNavLink to={`/${user}/anonymoussharing`}>Anonymous Sharing</MobileNavLink>
+                    <MobileNavLink to="/aboutus">About Us</MobileNavLink>
                   </div>
                   <div className="py-6">
                     {isLoggedIn ? (
-                      <div className="relative">
-                        <button
-                          type="button"
-                          className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                          id="user-menu-button-mobile"
-                          aria-expanded={dropdownOpen}
-                          aria-haspopup="true"
-                          onClick={toggleDropdown}
-                        >
-                          <span className="absolute -inset-1.5"></span>
-                          <span className="sr-only">Open user menu</span>
-                          <img className="h-8 w-8 rounded-full" src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=338&ext=jpg&ga=GA1.1.2082370165.1716336000&semt=ais_user" alt="Profile" />
-                        </button>
-                        {dropdownOpen && (
-                          <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button-mobile" tabIndex="-1">
-                            <a href={`/${user}/profile`} className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-0-mobile">Your Profile</a>
-                            <a onClick={(e) => handleLogout(e)} href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2">Sign out</a>
-                    <a onClick={handleDelete} href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2">Delete Profile</a>
-                          </div>
-                        )}
+                      <div>
+                        {/* You can add the profile dropdown for mobile here if needed */}
+                        <button onClick={handleLogout} className="w-full text-left -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Sign out</button>
+                        <button onClick={handleDelete} className="w-full text-left -mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Delete Profile</button>
                       </div>
                     ) : (
-                      <a href="/login" className="text-sm font-semibold leading-6 text-gray-900">
-                        Login <span aria-hidden="true">→</span>
-                      </a>
+                      <Link to="/login" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                        Login
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -196,9 +183,7 @@ const Navbar = () => {
         <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-title">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
@@ -227,7 +212,6 @@ const Navbar = () => {
         </div>
       )}
     </div>
-
   );
 };
 

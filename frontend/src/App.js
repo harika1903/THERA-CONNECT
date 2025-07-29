@@ -1,6 +1,5 @@
 import React from 'react';
 import {BrowserRouter, Routes, Route, Navigate, useParams} from 'react-router-dom';
-import Navbar from './compnents/navbar/Navbar';
 import Home from './compnents/home/Home';
 import Profile from './compnents/profile/Profile';
 import NotFound from './compnents/notFound/NotFound';

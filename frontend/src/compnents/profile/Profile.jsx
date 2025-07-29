@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 
 import Loader from "react-js-loader";
-import { Audio } from 'react-loader-spinner';
 import Readjournal from '../journal/Readjournal';
 import defaultProfilePicture from './download2.jpg';
 

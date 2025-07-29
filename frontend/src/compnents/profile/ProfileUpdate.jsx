@@ -248,7 +248,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { PhotoIcon } from '@heroicons/react/24/solid';
+
 import axios from 'axios';
 
 const ProfileUpdate = () => {
@@ -314,9 +314,7 @@ const ProfileUpdate = () => {
         }
     };
 
-    const handleFileChange = (e) => {
-        setProfilePicture(e.target.files[0]);
-    };
+   
 
     const handleSubmit = async (e) => {
         e.preventDefault();

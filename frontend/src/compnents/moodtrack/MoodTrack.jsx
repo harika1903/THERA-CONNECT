@@ -10,7 +10,6 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 const MoodTrack = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mood, setMood] = useState(null);
   const [moodData, setMoodData] = useState([]);
   
   const username = localStorage.getItem('tokenUser');
