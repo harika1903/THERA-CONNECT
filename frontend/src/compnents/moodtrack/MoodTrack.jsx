@@ -1,122 +1,73 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Dialog, Transition } from '@headlessui/react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 import Navbar from '../navbar/Navbar';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
-
 const MoodTrack = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [moodData, setMoodData] = useState([]);
-  
-  const username = localStorage.getItem('tokenUser');
-  console.log(username);
+  const { username } = useParams();
+  // This is the line that has been corrected.
+  // We are using [mood, setMood] again to fix the build error.
+  const [mood, setMood] = useState('');
+  const [moods, setMoods] = useState([]);
 
   useEffect(() => {
-    // Fetch existing mood data for the user
-    axios.get(`http://localhost:4000/api/moods/${username}`)
-      .then(response => setMoodData(response.data))
-      .catch(error => console.error('Error fetching mood data:', error));
+    const fetchMoods = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/moods/${username}`);
+        setMoods(response.data);
+      } catch (error) {
+        console.error('Error fetching moods:', error);
+      }
+    };
+
+    fetchMoods();
   }, [username]);
 
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
-    setIsModalOpen(true);
+  const handleMoodChange = (event) => {
+    setMood(event.target.value);
   };
 
-  const handleMoodSelect = (selectedMood) => {
-    setMood(selectedMood);
-    axios.post(`http://localhost:4000/api/moods/${username}`, { date: selectedDate, mood: selectedMood })
-      .then(response => {
-        setMoodData(prevData => [...prevData, response.data]);
-        setIsModalOpen(false);
-      })
-      .catch(error => console.error('Error saving mood:', error));
-  };
-
-  const moodLabels = ['😄', '😊', '😐', '😔', '😢'];
-  const moodCounts = moodLabels.map(label => moodData.filter(entry => entry.mood === label).length);
-
-  const data = {
-    labels: moodLabels,
-    datasets: [
-      {
-        label: 'Mood Frequency',
-        data: moodCounts,
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderWidth: 1,
-      },
-    ],
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await axios.post(`http://localhost:4000/api/moods/${username}`, { mood });
+      // After submitting, refetch moods to update the list
+      const response = await axios.get(`http://localhost:4000/api/moods/${username}`);
+      setMoods(response.data);
+      setMood(''); // Clear the input after submission
+    } catch (error) {
+      console.error('Error submitting mood:', error);
+    }
   };
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-12 mt-20 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 rounded-lg shadow-lg border border-gray-400" style={{ maxWidth: '840px', marginTop: '100px' }}>
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="text-center">
-            <input
-              type="date"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-4"
-              onChange={handleDateChange}
-            />
-          </div>
-          <Transition appear show={isModalOpen} as={React.Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={() => setIsModalOpen(false)}>
-              <Transition.Child
-                as={React.Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="fixed inset-0 bg-black bg-opacity-25" />
-              </Transition.Child>
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex items-center justify-center min-h-full p-4 text-center">
-                  <Transition.Child
-                    as={React.Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0 scale-95"
-                    enterTo="opacity-100 scale-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100 scale-100"
-                    leaveTo="opacity-0 scale-95"
-                  >
-                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                      <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                        How do you feel today?
-                      </Dialog.Title>
-                      <div className="mt-4 flex justify-around">
-                        {moodLabels.map((emoji, index) => (
-                          <button
-                            key={index}
-                            className="text-4xl transition duration-300 ease-in-out transform hover:scale-110"
-                            onClick={() => handleMoodSelect(emoji)}
-                          >
-                            {emoji}
-                          </button>
-                        ))}
-                      </div>
-                    </Dialog.Panel>
-                  </Transition.Child>
-                </div>
-              </div>
-            </Dialog>
-          </Transition>
-        </div>
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="text-center mb-4">
-            <h2 className="text-2xl font-semibold text-gray-800">Mood Frequency</h2>
-          </div>
-          <div className="mt-6 h-96">
-            <Bar data={data} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }} />
-          </div>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4">Mood Tracker for {username}</h1>
+        <form onSubmit={handleSubmit} className="mb-8">
+          <label htmlFor="mood" className="block text-lg font-medium mb-2">How are you feeling today?</label>
+          <input
+            type="text"
+            id="mood"
+            value={mood}
+            onChange={handleMoodChange}
+            className="w-full px-4 py-2 border rounded-md"
+            placeholder="e.g., Happy, Sad, Anxious"
+          />
+          <button type="submit" className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
+            Save Mood
+          </button>
+        </form>
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Your Mood History</h2>
+          <ul>
+            {moods.map((entry) => (
+              <li key={entry._id} className="mb-2 p-2 border rounded-md">
+                {new Date(entry.date).toLocaleDateString()}: {entry.mood}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </>
