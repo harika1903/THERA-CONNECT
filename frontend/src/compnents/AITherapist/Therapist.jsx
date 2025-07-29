@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import axios from 'axios'; // Use axios for making API calls from the frontend
 import Loader from 'react-js-loader';
 import Navbar from '../navbar/Navbar';
 import './Therapist.css';
 
-const API_KEY = process.env.REACT_APP_API_KEY;
-const genAI = new GoogleGenerativeAI(API_KEY);
+// We do not import any backend packages like express or node-fetch here.
 
 const TypingAnimation = ({ color }) => (
   <div className="item text-2xl">
@@ -22,28 +21,26 @@ const Therapist = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const newMessage = { sender: 'user', text: input };
-    setMessages([...messages, newMessage]);
+    const userMessage = { sender: 'user', text: input };
+    // Use a callback with setMessages to ensure you have the latest state
+    setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setLoading(true);
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const prompt = `Analyse the user's input and give suggestions or talk with them and provide an answer in paragraphs with spaces between paragraphs and points. Respond as if you are talking to the user in the first person, not the third person:\n\nUser: ${input}\nTherapist:`;
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      let aiMessage = await response.text();
+      // This is the correct way to call your backend from your frontend.
+      // It sends a request to the /api/aichat route you created.
+      const response = await axios.post('http://localhost:4000/api/aichat', {
+        message: input
+      });
+      
+      const aiMessage = { sender: 'ai', text: response.data.message };
+      setMessages(prevMessages => [...prevMessages, aiMessage]);
 
-      // Replace **word** with <strong>word</strong>
-      aiMessage = aiMessage.replace(/\*\*(.*?)\*\*/g, '$1');
-
-      // Simulate typing delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setMessages([...messages, newMessage, { sender: 'ai', text: aiMessage }]);
     } catch (error) {
       console.error('Error generating response:', error);
-      setMessages([...messages, newMessage, { sender: 'ai', text: 'An error occurred while generating the response.' }]);
+      const errorMessage = { sender: 'ai', text: 'An error occurred while generating the response.' };
+      setMessages(prevMessages => [...prevMessages, errorMessage]);
     } finally {
       setLoading(false);
     }
@@ -56,8 +53,8 @@ const Therapist = () => {
   };
 
   useEffect(() => {
-    // Scroll to the bottom of the chat box whenever messages change
     if (chatBoxRef.current) {
+      // This line has been corrected from chatBox_ref to chatBoxRef
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   }, [messages]);

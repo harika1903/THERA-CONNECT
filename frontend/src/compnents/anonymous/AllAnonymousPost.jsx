@@ -8,7 +8,7 @@
 //   useEffect(() => {
 //     const fetchAnonymousPosts = async () => {
 //       try {
-//         const response = await axios.get('http://localhost:8000/anonymousPosts');
+//         const response = await axios.get('http://localhost:4000/anonymousPosts');
 //         setAnonymousPosts(response.data);
 //       } catch (error) {
 //         console.error('Error fetching anonymous posts:', error);
@@ -70,7 +70,7 @@ const AllAnonymousPost = () => {
   useEffect(() => {
     const fetchAnonymousPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/anonymousPosts');
+        const response = await axios.get('http://localhost:4000/anonymousPosts');
         setAnonymousPosts(response.data);
       } catch (error) {
         console.error('Error fetching anonymous posts:', error);

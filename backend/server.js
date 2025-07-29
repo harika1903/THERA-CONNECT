@@ -1,7 +1,6 @@
 import http from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -13,6 +12,12 @@ import Connection from './database/db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
+
+// --- FINAL FIX: Explicitly define path to and load the .env file ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+// --- END FIX ---
 
 
 mongoose.set('strictQuery', true);
@@ -28,10 +33,18 @@ app.use(cors({
   credentials: true,
 
 }));
+// In backend/server.js
+app.use(cors({
+  origin: "*", // Allow all origins for now
+  credentials: true,
+}));
+
+
 app.use(cookieParser());
 app.use (bodyParser.json ({extended: true}));
 app.use (bodyParser.urlencoded({extended: true}));
 
+// This will now correctly use the SESSION_SECRET loaded from the .env file
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -40,13 +53,14 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
+// Use the __dirname variable defined at the top
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/upload1', express.static(path.join(__dirname, 'upload1')));
 
+// This function will now correctly use the MONGO_URI from the .env file
 Connection();
+
 app.use('/', userRoutes);
 
 const port = process.env.PORT || 4000;
@@ -54,4 +68,3 @@ const port = process.env.PORT || 4000;
 server.listen(port, () => {
   console.log("Server is running on port", port);
 });
-
