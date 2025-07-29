@@ -2,21 +2,14 @@
 # It tells Netlify how to build your frontend.
 
 [build]
-  # This is the directory where your frontend source code is located.
-  # Netlify will run the build command from inside this directory.
-  base = "frontend"
-
   # This is the command to build your site.
   # It installs dependencies (ignoring the peer dependency issue)
   # and then runs the build script.
   command = "npm install --legacy-peer-deps && npm run build"
 
   # This is the directory where your final website files are located after the build.
-  # It should be 'build', relative to the 'base' directory.
-  publish = "build"
+  publish = "frontend/build"
 
-# This is the redirect rule to make sure your app's routing works.
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  # This is the directory where your frontend source code is located.
+  # Netlify will run the build command from inside this directory.
+  base = "frontend"
