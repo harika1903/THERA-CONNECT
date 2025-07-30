@@ -19,7 +19,8 @@ const AnonymousPost = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/createAnonymousPosts', {
+      const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${API_BASE_URL}/createAnonymousPosts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

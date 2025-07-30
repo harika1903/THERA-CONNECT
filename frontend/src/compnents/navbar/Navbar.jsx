@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const user = localStorage.getItem('tokenUser');
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -42,7 +42,7 @@ const Navbar = () => {
 
   const confirmDelete = async () => {
     try {
-      await fetch(`http://localhost:4000/delete-user/${user}`, {
+      await fetch(`${API_BASE_URL}/delete-user/${user}`, {
         method: 'DELETE',
       });
       localStorage.removeItem('token');

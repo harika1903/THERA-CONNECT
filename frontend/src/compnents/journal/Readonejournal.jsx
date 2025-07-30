@@ -7,11 +7,11 @@ const JournalDetail = () => {
     const { id, username } = useParams();
     const [journal, setJournal] = useState(null);
     const [error, setError] = useState(null);
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
     useEffect(() => {
         const fetchJournal = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/${username}/${id}`);
+                const response = await axios.get(`${API_BASE_URL}/${username}/${id}`);
                 setJournal(response.data);
             } catch (error) {
                 setError('Error fetching journal details');
@@ -28,7 +28,7 @@ const JournalDetail = () => {
         return <div>Loading...</div>;
     }
 
-    const coverImage = journal.coverPicture ? `http://localhost:4000/${journal.coverPicture}` : defaultCoverImage;
+    const coverImage = journal.coverPicture ? `API_BASE_URL/${journal.coverPicture}` : defaultCoverImage;
 
     return (
         <div className="bg-white py-16 sm:py-24">

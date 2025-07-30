@@ -6,7 +6,7 @@ import { useParams, Link } from 'react-router-dom';
 import Loader from "react-js-loader";
 import Readjournal from '../journal/Readjournal';
 import defaultProfilePicture from './download2.jpg';
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 const Profile = () => {
   const [userDetails, setUserDetails] = useState(null);
 
@@ -17,7 +17,7 @@ const Profile = () => {
     // Function to fetch user details
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/${username}/getuserdetails`);
+        const response = await axios.get(`${API_BASE_URL}/${username}/getuserdetails`);
         // Set user details in state
         console.log(response);
         setUserDetails(response.data);
@@ -78,7 +78,7 @@ const Profile = () => {
                     <div className="relative">
                       <img
                         alt="Profile"
-                        src={userDetails.profilePicture ? `http://localhost:4000/${userDetails.profilePicture}` : defaultProfilePicture}
+                        src={userDetails.profilePicture ? `API_BASE_URL/${userDetails.profilePicture}` : defaultProfilePicture}
                         className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-24 max-w-[180px]"
                       />
                     </div>

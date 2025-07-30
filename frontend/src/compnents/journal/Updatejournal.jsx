@@ -15,7 +15,7 @@
 //     useEffect(() => {
 //         const fetchJournal = async () => {
 //             try {
-//                 const response = await axios.get(`http://localhost:4000/${username}/${id}`);
+//                 const response = await axios.get(`API_BASE_URL/${username}/${id}`);
 //                 if (response.status === 200) {
 //                     const { title, article, tags, coverPicture } = response.data;
 //                     setTitle(title);
@@ -75,7 +75,7 @@
 // }
 
 // // Send the request with the plain JavaScript object
-// const response = await axios.put(`http://localhost:4000/journals/${username}/${id}`, formDataObject);
+// const response = await axios.put(`API_BASE_URL/journals/${username}/${id}`, formDataObject);
     
 //             if (response.status !== 200) {
 //                 throw new Error('Network response was not ok');
@@ -206,11 +206,11 @@ const UpdateJournal = () => {
     const [error, setError] = useState('');
     const { username, id } = useParams();
     const navigate = useNavigate();
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
     useEffect(() => {
         const fetchJournal = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/${username}/${id}`);
+                const response = await axios.get(`${API_BASE_URL}/${username}/${id}`);
                 if (response.status === 200) {
                     const { title, article, tags, coverPicture } = response.data;
                     setTitle(title);
@@ -258,7 +258,7 @@ const UpdateJournal = () => {
                 formDataObject[key] = value;
             }
 
-            const response = await axios.put(`http://localhost:4000/journals/${username}/${id}`, formDataObject);
+            const response = await axios.put(`API_BASE_URL/journals/${username}/${id}`, formDataObject);
     
             if (response.status !== 200) {
                 throw new Error('Network response was not ok');

@@ -8,7 +8,7 @@
 //   useEffect(() => {
 //     const fetchAnonymousPosts = async () => {
 //       try {
-//         const response = await axios.get('http://localhost:4000/anonymousPosts');
+//         const response = await axios.get('API_BASE_URL/anonymousPosts');
 //         setAnonymousPosts(response.data);
 //       } catch (error) {
 //         console.error('Error fetching anonymous posts:', error);
@@ -68,9 +68,10 @@ const AllAnonymousPost = () => {
   const [anonymousPosts, setAnonymousPosts] = useState([]);
 
   useEffect(() => {
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
     const fetchAnonymousPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/anonymousPosts');
+        const response = await axios.get(`${API_BASE_URL}/anonymousPosts`);
         setAnonymousPosts(response.data);
       } catch (error) {
         console.error('Error fetching anonymous posts:', error);

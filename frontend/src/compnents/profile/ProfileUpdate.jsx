@@ -18,7 +18,7 @@
 //     useEffect(() => {
 //         const fetchUserDetails = async () => {
 //             try {
-//                 const response = await fetch(`http://localhost:4000/${username}/getuserdetails`);
+//                 const response = await fetch(`API_BASE_URL/${username}/getuserdetails`);
 //                 if (response.status === 200) {
 //                     const data = await response.json();
 //                     const { name, email, gender, age, bio, profilePicture } = data;
@@ -86,7 +86,7 @@
 //                 formData.append('profilePicture', profilePicture);
 //             }
     
-//             const response = await axios.patch(`http://localhost:4000/${username}/update-user`, formData, { headers: { 'Content-Type': 'application/json'}});
+//             const response = await axios.patch(`API_BASE_URL/${username}/update-user`, formData, { headers: { 'Content-Type': 'application/json'}});
 //             console.log(response);
 //             if (response.status === 200) {
 //                 navigate(`/${username}/profile`);
@@ -262,11 +262,12 @@ const ProfileUpdate = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { username } = useParams();
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:4000/${username}/getuserdetails`);
+                const response = await fetch(`${API_BASE_URL}/${username}/getuserdetails`);
                 if (response.status === 200) {
                     const data = await response.json();
                     const { name, email, gender, age, bio, profilePicture } = data;
@@ -332,7 +333,7 @@ const ProfileUpdate = () => {
                 formData.append('profilePicture', profilePicture);
             }
 
-            const response = await axios.patch(`http://localhost:4000/${username}/update-user`, formData, { headers: { 'Content-Type': 'application/json'}});
+            const response = await axios.patch(`API_BASE_URL/${username}/update-user`, formData, { headers: { 'Content-Type': 'application/json'}});
             console.log(response);
             if (response.status === 200) {
                 navigate(`/${username}/profile`);

@@ -11,10 +11,11 @@ const Readjournal = () => {
     const { username } = useParams();
     const navigate = useNavigate();
 
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
     useEffect(() => {
         const fetchJournals = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/${username}/journals`);
+                const response = await axios.get(`${API_BASE_URL}/${username}/journals`);
                 setJournals(response.data);
             } catch (error) {
                 console.error('Error fetching journals:', error);
@@ -39,7 +40,7 @@ const Readjournal = () => {
 
     const confirmDelete = async () => {
         try {
-            await axios.delete(`http://localhost:4000/journal-delete/${username}/${journalToDelete}`);
+            await axios.delete(`API_BASE_URL/journal-delete/${username}/${journalToDelete}`);
             // Remove the deleted journal from the state
             setJournals(journals.filter(journal => journal._id !== journalToDelete));
             // Close the confirmation modal
@@ -64,7 +65,7 @@ const Readjournal = () => {
                 </div>
                 <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
                     {journals.map((journal) => {
-                        const coverImage = journal.coverPicture ? `http://localhost:4000/${journal.coverPicture}` : defaultCoverImage;
+                        const coverImage = journal.coverPicture ? `API_BASE_URL/${journal.coverPicture}` : defaultCoverImage;
 
                         return (
                             <div key={journal._id} className="bg-white shadow-md rounded-lg overflow-hidden relative">

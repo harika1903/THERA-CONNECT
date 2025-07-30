@@ -9,11 +9,11 @@ const MoodTrack = () => {
   // We are using [mood, setMood] again to fix the build error.
   const [mood, setMood] = useState('');
   const [moods, setMoods] = useState([]);
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
   useEffect(() => {
     const fetchMoods = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/moods/${username}`);
+        const response = await axios.get(`${API_BASE_URL}/api/moods/${username}`);
         setMoods(response.data);
       } catch (error) {
         console.error('Error fetching moods:', error);
@@ -30,9 +30,9 @@ const MoodTrack = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post(`http://localhost:4000/api/moods/${username}`, { mood });
+      await axios.post(`API_BASE_URL/api/moods/${username}`, { mood });
       // After submitting, refetch moods to update the list
-      const response = await axios.get(`http://localhost:4000/api/moods/${username}`);
+      const response = await axios.get(`API_BASE_URL/api/moods/${username}`);
       setMoods(response.data);
       setMood(''); // Clear the input after submission
     } catch (error) {

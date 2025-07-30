@@ -20,7 +20,7 @@ export default function Signup() {
 
     // Define the base URL for your backend API
     // This will be 'https://thera-connect.onrender.com' when deployed on Netlify
-    // and 'http://localhost:4000' (or whatever you set in your local .env) for local development.
+    // and 'API_BASE_URL' (or whatever you set in your local .env) for local development.
     const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
     const handleChange = (e) => {

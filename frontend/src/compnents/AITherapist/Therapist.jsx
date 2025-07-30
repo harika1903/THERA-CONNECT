@@ -26,11 +26,11 @@ const Therapist = () => {
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setLoading(true);
-
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
     try {
       // This is the correct way to call your backend from your frontend.
       // It sends a request to the /api/aichat route you created.
-      const response = await axios.post('http://localhost:4000/api/aichat', {
+      const response = await axios.post(`${API_BASE_URL}/api/aichat`, {
         message: input
       });
       
