@@ -19,8 +19,8 @@ export default function Signup() {
     const navigate = useNavigate();
 
     // Define the base URL for your backend API
-    // This will be 'https://thera-connect.onrender.com' when deployed on Netlify
-    // and 'API_BASE_URL' (or whatever you set in your local .env) for local development.
+    // This will be 'https://thera-connect.onrender.com' when deployed on Render
+    // and 'http://localhost:4000' (or whatever you set in your local .env) for local development.
     const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
     const handleChange = (e) => {
@@ -74,7 +74,14 @@ export default function Signup() {
 
             const data = await response.json();
             console.log('Signup successful:', data);
-            navigate('/login');
+            
+            // Assuming your backend sends a token and username upon successful signup
+            // You MUST store the token and username in localStorage
+            localStorage.setItem('token', data.token); 
+            localStorage.setItem('tokenUser', data.username); // Store the username
+
+            // MODIFICATION HERE: Navigate to the root page after successful signup
+            navigate('/'); 
         } catch (error) {
             console.error('Error signing up:', error);
             // You might want to display a more user-friendly error message here as well

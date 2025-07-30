@@ -10,8 +10,6 @@ export default function Login() {
     const navigate = useNavigate();
 
     // Define the base URL for your backend API
-    // This will be 'https://thera-connect.onrender.com' when deployed on Netlify
-    // and 'API_BASE_URL' (or whatever you set in your local .env) for local development.
     const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
     const handleChange = (e) => {
@@ -27,7 +25,6 @@ export default function Login() {
         setError(''); // Clear previous errors
 
         try {
-            // MODIFICATION HERE: Use the API_BASE_URL variable
             const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: {
@@ -43,10 +40,14 @@ export default function Login() {
 
             const data = await response.json();
             console.log('Login successful:', data);
-            // Assuming your backend sends a token or user data upon successful login
-            // You might want to store the token in localStorage/sessionStorage here
-            // localStorage.setItem('token', data.token); 
-            navigate('/home'); // Redirect to home or dashboard after successful login
+            
+            // Assuming your backend sends a token and username upon successful login
+            // You MUST store the token and username in localStorage
+            localStorage.setItem('token', data.token); 
+            localStorage.setItem('tokenUser', data.username); // Store the username
+
+            // MODIFICATION HERE: Navigate to the root page
+            navigate('/'); // Navigate to the root page (which is your Home component)
         } catch (error) {
             console.error('Error logging in:', error);
             setError(error.message); // Display the error message from the backend or generic
@@ -133,7 +134,8 @@ export default function Login() {
 
                         <div className="flex items-center justify-between">
                             <div className="text-sm">
-                                <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                                {/* Fix for jsx-a11y/anchor-is-valid: Changed href="#" to href="javascript:void(0)" */}
+                                <a href="javascript:void(0)" className="font-semibold text-indigo-600 hover:text-indigo-500">
                                     Forgot password?
                                 </a>
                             </div>
