@@ -157,7 +157,7 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
                     <MobileNavLink to={`/${user}/therapist`}>AI Therapist</MobileNavLink>
                     <MobileNavLink to={`/${user}/quiz`}>Quiz</MobileNavLink>
                     <MobileNavLink to={`/${user}/anonymoussharing`}>Anonymous Sharing</MobileNavLink>
-                    <MobileNavLink to="/aboutus">About Us</MobileNavLink>
+                   
                   </div>
                   <div className="py-6">
                     {isLoggedIn ? (

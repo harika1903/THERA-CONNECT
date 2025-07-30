@@ -49,7 +49,7 @@ function App() {
         <Route path="/:username/mood" element={<PrivateRoute><MoodTrack /></PrivateRoute>} />
         <Route path="/:username/quiz" element={<PrivateRoute><Quiz /></PrivateRoute>} />
         <Route path="/:username/therapist" element={<PrivateRoute><Therapist /></PrivateRoute>} />
-        <Route path="/aboutus" element={<AboutUs />} />
+        
         
 
 
